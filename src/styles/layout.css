@@ -30,7 +30,6 @@
   .page__grid {
     display: grid;
     grid-template-columns: min(17.5rem, 28%) 1fr;
-    align-items: start;
     gap: var(--space-12);
   }
 
@@ -42,6 +41,7 @@
   .page__sidebar {
     grid-column: 1;
     grid-row: 1;
+    align-self: stretch;
   }
 
   .sidebar__inner {
