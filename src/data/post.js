@@ -11,7 +11,7 @@ export const post = {
   },
   author: {
     name: 'Jordan Lee',
-    bio: 'Staff engineer and technical writer. Cares about JavaScript, API design, and code that the next person can actually follow.',
+    bio: 'Engineer and technical writer. Cares about JavaScript, API design, and code that the next person can actually follow.',
     avatar: 'https://picsum.photos/seed/jordan-lee/96/96',
   },
   tags: ['JavaScript', 'Async', 'Readability', 'Patterns', 'Web APIs'],
