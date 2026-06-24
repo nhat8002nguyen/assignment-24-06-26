@@ -1,55 +1,51 @@
 # Editorial Blog Layout
 
-A responsive blog post layout built for a frontend technical test.
+Responsive blog post page for a frontend take-home. One long article, sticky sidebar on desktop, TOC that tracks scroll.
 
-## Stack
-
-- **React + Vite** — component structure and dev tooling
-- **Hand-written CSS (BEM)** — no Tailwind or UI kits; all layout and typography in `src/styles/`
-- **IntersectionObserver** — TOC scroll-sync via `useTableOfContents` hook
-
-## Architecture
-
-- Content lives in `src/data/post.js` as structured data
-- Components grouped by domain under `src/components/`:
-  - `layout/` — Header, Footer, BlogLayout, SkipLink
-  - `post-article/` — Article, ArticleBody
-  - `post-sidebar/` — Sidebar, AuthorCard, TableOfContents, Tags
-- Hooks in `src/hooks/`; styles in `src/styles/`
-- Mobile DOM order: main article first, sidebar second
-- Desktop: CSS Grid repositions sidebar left; `position: sticky` on `.sidebar__inner`
-- TOC highlights active section with `aria-current="location"`
-
-## Run locally
+## How to run
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173
+Then open http://localhost:5173 (Vite may pick another port if 5173 is busy).
 
-## Build
+Build for production:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Test
+Tests:
 
 ```bash
 npm test
 ```
 
-## Trade-offs
+## What I used
 
-- Plain CSS over CSS Modules: single page, evaluators can read all styles in one place
-- IntersectionObserver over scroll listeners: better performance, less layout thrashing
-- Structured post data over MDX: keeps scope small for a 2–4 hour exercise
+React + Vite for components and dev tooling. All styling is hand-written CSS with BEM-style class names — no Tailwind, no UI kit. I wanted the layout and typography to be easy to read in review without digging through a framework.
 
-## Next priorities
+TOC scroll-sync is a small `useTableOfContents` hook built on `IntersectionObserver`. Click a link and it smooth-scrolls to the section (respects `prefers-reduced-motion`).
 
-- Dark mode toggle with CSS variables
-- Print stylesheet
-- Deploy to Vercel/Netlify
+## How it's put together
+
+Post content is in `src/data/post.js` as plain data. Keeps the JSX components thin and makes it simple to swap in real content later.
+
+Components are split by area:
+
+- `src/components/layout/` — header, footer, page grid, skip link
+- `src/components/post-article/` — article shell and body renderer
+- `src/components/post-sidebar/` — author card, TOC, tags
+
+Styles live in `src/styles/` (variables, base, typography, layout, components).
+
+On mobile, the article comes first in the DOM and the sidebar stacks underneath. On desktop, CSS Grid puts the sidebar on the left without changing that order. Sticky positioning is on `.sidebar__inner` — had to stretch the aside to the full grid row height or sticky stopped working partway through the scroll.
+
+## Notes
+
+I went with global CSS files instead of CSS Modules since it's a single page and everything is in one place. IntersectionObserver felt like the right fit for TOC highlighting vs. a scroll listener firing on every frame.
+
+If I had more time: dark mode with CSS variables, a print stylesheet, and a deploy to Vercel or Netlify.
