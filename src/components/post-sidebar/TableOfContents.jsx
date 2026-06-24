@@ -1,4 +1,4 @@
-import { useTableOfContents } from '../hooks/useTableOfContents';
+import { useTableOfContents } from '../../hooks';
 
 function TableOfContents({ items }) {
   const headingIds = items.map((item) => item.id);

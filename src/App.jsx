@@ -1,10 +1,7 @@
 import { post } from './data/post';
-import SkipLink from './components/SkipLink';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import BlogLayout from './components/BlogLayout';
-import Article from './components/Article';
-import Sidebar from './components/Sidebar';
+import { Header, Footer, BlogLayout, SkipLink } from './components/layout';
+import { Article } from './components/post-article';
+import { Sidebar } from './components/post-sidebar';
 
 function App() {
   return (

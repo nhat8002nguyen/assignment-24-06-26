@@ -1,0 +1,1 @@
+export { useTableOfContents } from './useTableOfContents';
