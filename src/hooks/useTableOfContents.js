@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -6,6 +6,9 @@ function prefersReducedMotion() {
 
 export function useTableOfContents(headingIds) {
   const [activeId, setActiveId] = useState(headingIds[0] ?? null);
+  const clickLockIdRef = useRef(null);
+  const isProgrammaticScrollRef = useRef(false);
+  const scrollEndTimerRef = useRef(null);
 
   useEffect(() => {
     if (headingIds.length === 0) {
@@ -25,6 +28,10 @@ export function useTableOfContents(headingIds) {
           }
         });
 
+        if (clickLockIdRef.current) {
+          return;
+        }
+
         const nextActive = headingIds.find((id) => visibleIds.has(id));
         if (nextActive) {
           setActiveId(nextActive);
@@ -43,7 +50,33 @@ export function useTableOfContents(headingIds) {
       }
     });
 
-    return () => observer.disconnect();
+    const endProgrammaticScroll = () => {
+      isProgrammaticScrollRef.current = false;
+    };
+
+    const onScroll = () => {
+      if (!isProgrammaticScrollRef.current && clickLockIdRef.current) {
+        clickLockIdRef.current = null;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const supportsScrollEnd = 'onscrollend' in window;
+    if (supportsScrollEnd) {
+      window.addEventListener('scrollend', endProgrammaticScroll);
+    }
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
+      if (supportsScrollEnd) {
+        window.removeEventListener('scrollend', endProgrammaticScroll);
+      }
+      if (scrollEndTimerRef.current) {
+        clearTimeout(scrollEndTimerRef.current);
+      }
+    };
   }, [headingIds]);
 
   const scrollToHeading = useCallback((id) => {
@@ -52,12 +85,39 @@ export function useTableOfContents(headingIds) {
       return;
     }
 
+    clickLockIdRef.current = id;
+    isProgrammaticScrollRef.current = true;
+    setActiveId(id);
+
+    const reducedMotion = prefersReducedMotion();
+
     element.scrollIntoView({
-      behavior: prefersReducedMotion() ? 'instant' : 'smooth',
+      behavior: reducedMotion ? 'instant' : 'smooth',
       block: 'start',
     });
 
-    setActiveId(id);
+    if (scrollEndTimerRef.current) {
+      clearTimeout(scrollEndTimerRef.current);
+    }
+
+    if (reducedMotion) {
+      isProgrammaticScrollRef.current = false;
+      return;
+    }
+
+    const finishProgrammaticScroll = () => {
+      isProgrammaticScrollRef.current = false;
+      if (scrollEndTimerRef.current) {
+        clearTimeout(scrollEndTimerRef.current);
+        scrollEndTimerRef.current = null;
+      }
+    };
+
+    if ('onscrollend' in window) {
+      window.addEventListener('scrollend', finishProgrammaticScroll, { once: true });
+    }
+
+    scrollEndTimerRef.current = setTimeout(finishProgrammaticScroll, 1000);
   }, []);
 
   return { activeId, scrollToHeading };

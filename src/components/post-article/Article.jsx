@@ -5,7 +5,7 @@ function Article({ post }) {
     <article id="main-content" className="article">
       <h1 className="article__title">{post.title}</h1>
       <p className="article__meta">
-        <time dateTime="2026-06-24">{post.publishedAt}</time>
+        <time dateTime={post.publishedAtISO}>{post.publishedAt}</time>
         <span className="article__meta-separator" aria-hidden="true">
           ·
         </span>

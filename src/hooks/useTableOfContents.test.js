@@ -34,6 +34,21 @@ describe('useTableOfContents', () => {
     });
   });
 
+  test('scrollToHeading sets active heading immediately', () => {
+    const intro = document.getElementById('intro');
+    intro.scrollIntoView = vi.fn();
+
+    const { result } = renderHook(() =>
+      useTableOfContents(['intro', 'details']),
+    );
+
+    act(() => {
+      result.current.scrollToHeading('intro');
+    });
+
+    expect(result.current.activeId).toBe('intro');
+  });
+
   test('scrollToHeading uses instant behavior when reduced motion preferred', () => {
     window.matchMedia = vi.fn().mockImplementation((query) => ({
       matches: query === '(prefers-reduced-motion: reduce)',

@@ -24,6 +24,25 @@ Tests:
 npm test
 ```
 
+## Deploy to Vercel
+
+This is a static Vite app. Vercel detects it automatically — no extra config needed.
+
+**From the Vercel dashboard**
+
+1. Import this repo at [vercel.com/new](https://vercel.com/new).
+2. Keep the defaults (Framework Preset: **Vite**, Build Command: `npm run build`, Output Directory: `dist`).
+3. Deploy. Each push to the connected branch redeploys.
+
+**From the CLI**
+
+```bash
+npm install -g vercel
+vercel
+```
+
+Follow the prompts for the first deploy; use `vercel --prod` for production.
+
 ## What I used
 
 React + Vite for components and dev tooling. All styling is hand-written CSS with BEM-style class names — no Tailwind, no UI kit. I wanted the layout and typography to be easy to read in review without digging through a framework.
@@ -48,4 +67,4 @@ On mobile, the article comes first in the DOM and the sidebar stacks underneath.
 
 I went with global CSS files instead of CSS Modules since it's a single page and everything is in one place. IntersectionObserver felt like the right fit for TOC highlighting vs. a scroll listener firing on every frame.
 
-If I had more time: dark mode with CSS variables, a print stylesheet, and a deploy to Vercel or Netlify.
+If I had more time: dark mode with CSS variables and a print stylesheet.
